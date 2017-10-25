@@ -11,8 +11,8 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=35953c752efc9299b184f91bef540095"
 PR = "r0"
 EXCLUDE_FROM_WORLD = "1"
 
-SRC_URI[md5sum] = "d4f6ca65aadc6310b3872ee421e79fa6"
-SRC_URI[sha256sum] = "f5b3563f118f1d3d6e001705fa7082e8fc3bda50038ac3dff787650795734146"
+SRC_URI[md5sum] = "41f2934b451a82115ccc4aa1f9b156f2"
+SRC_URI[sha256sum] = "44e36eee53a7bc8b88935b105c8e2773f6ae9f89e3f25e95f93c4bcac908bb98"
 SRC_URI = "https://github.com/google/protobuf/archive/v3.0.0.tar.gz;downloadfilename=protobuf-3.0.0.tar.gz\
 	        file://protobuf-allow-running-python-scripts-from-anywhere.patch \
 	        file://run-ptest \
