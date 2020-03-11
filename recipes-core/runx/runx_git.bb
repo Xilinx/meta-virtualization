@@ -37,6 +37,9 @@ DEPENDS += "qemu-native"
 RDEPENDS_${PN} += " jq bash"
 RDEPENDS_${PN} += " xen-xl go-build socat daemonize"
 
+# This is typically machine specific, but we want this to be generic
+STAGING_KERNEL_DIR = "${WORKDIR}"
+
 do_compile() {
     # we'll need this for the initrd later, so lets error if it isn't what
     # we expect (statically linked)
