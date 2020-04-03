@@ -1,4 +1,5 @@
-do_install_append() {
-                echo "" >> ${D}${sysconfdir}/inittab
-                echo "X0:12345:respawn:${base_sbindir}/getty-wrapper 115200 hvc0" >> ${D}${sysconfdir}/inittab
-}
+SERIAL_CONSOLES += "115200;hvc0"
+
+# Ensure that hvc0 is removed from the inittab on first boot
+# if the console doesn't exist
+SERIAL_CONSOLES_CHECK += "115200;hvc0"
