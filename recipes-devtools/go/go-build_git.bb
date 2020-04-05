@@ -2,7 +2,7 @@ HOMEPAGE = "https://github.com/lf-edge/runx"
 SUMMARY = "console for runx"
 DESCRIPTION = "Xen Runtime for OCI"
 
-SRCREV_runx = "da0c75c58ae5232d19b1791c33545db3225e1ea9"
+SRCREV_runx = "a94bd577456dbca927c759674af788a0d9028e44"
 SRCREV_runc = "e4363b038787addfa12e8b0acf5417d4fba01693"
 
 SRC_URI = "\
@@ -42,7 +42,6 @@ do_install() {
 
     install -d ${D}${datadir}/runX
     install -m 755 ${B}/src/import/gobuild/serial_fd_handler ${D}${datadir}/runX/
-    install -m 755 ${B}/src/import/gobuild/recvtty ${D}${datadir}/runX/
  
 }
 

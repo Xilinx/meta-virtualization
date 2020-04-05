@@ -1,24 +1,24 @@
-From d8bd5749e6fc6e0c86a8720044ec78167bab3569 Mon Sep 17 00:00:00 2001
-From: Bruce Ashfield <bruce.ashfield@xilinx.com>
-Date: Mon, 16 Dec 2019 22:03:14 -0800
+From ace2a6608e4b8948baee5b9c89ba62c39cbf30b8 Mon Sep 17 00:00:00 2001
+From: Sai Hari Chandana Kalluri <chandana.kalluri@xilinx.com>
+Date: Sat, 4 Apr 2020 21:57:03 -0700
 Subject: [PATCH] make-initrd: cross install tweaks
 
+Signed-off-by: Sai Hari Chandana Kalluri <chandana.kalluri@xilinx.com>
 Signed-off-by: Bruce Ashfield <bruce.ashfield@xilinx.com>
 ---
- kernel/make-initrd | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ initrd/make-initrd | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/make-initrd b/kernel/make-initrd
-index 4c299dc..9ef386f 100755
---- a/kernel/make-initrd
-+++ b/kernel/make-initrd
-@@ -16,8 +16,22 @@ mkdir -p $tmpdir/sys
+diff --git a/initrd/make-initrd b/initrd/make-initrd
+index c087137..4f23cb2 100755
+--- a/initrd/make-initrd
++++ b/initrd/make-initrd
+@@ -16,8 +16,21 @@ mkdir -p $tmpdir/sys
  mkdir -p $tmpdir/lib
  mkdir -p $tmpdir/var
  mkdir -p $tmpdir/mnt
 -cp `which busybox` $tmpdir/bin
 -$tmpdir/bin/busybox --install $tmpdir/bin
-+
 +
 +if [ -z "$BUSYBOX" ]; then
 +    BUSYBOX=`which busybox`
@@ -38,5 +38,5 @@ index 4c299dc..9ef386f 100755
  cp $init $tmpdir/init
  chmod +x $tmpdir/init
 -- 
-2.17.1
+2.7.4
 
