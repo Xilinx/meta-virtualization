@@ -2,7 +2,7 @@ HOMEPAGE = "https://github.com/lf-edge/runx"
 SUMMARY = "runx stuff"
 DESCRIPTION = "Xen Runtime for OCI"
 
-SRCREV_runx = "ea9d383b4143d541bf528b38223c230c3b80ff5f"
+SRCREV_runx = "da0c75c58ae5232d19b1791c33545db3225e1ea9"
 SRC_URI = "\
 	  git://github.com/lf-edge/runx;nobranch=1;name=runx \
           https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.15.tar.xz;destsuffix=git/kernel/build \
@@ -81,7 +81,7 @@ do_compile() {
     export QEMU_USER=`which qemu-${HOST_ARCH}`
     export BUSYBOX="${WORKDIR}/busybox"
     export CROSS_COMPILE="t"
-    ${S}/initird/make-initrd
+    ${S}/kernel/make-initrd
 }
 
 do_install() {
@@ -90,7 +90,7 @@ do_install() {
     
     install -d ${D}${datadir}/runX
     install -m 755 ${S}/kernel/out/kernel ${D}/${datadir}/runX
-    install -m 755 ${S}/initrd/out/initrd ${D}/${datadir}/runX
+    install -m 755 ${S}/kernel/out/initrd ${D}/${datadir}/runX
     install -m 755 ${S}/files/start ${D}/${datadir}/runX
     install -m 755 ${S}/files/state ${D}/${datadir}/runX
     install -m 755 ${S}/files/delete ${D}/${datadir}/runX
