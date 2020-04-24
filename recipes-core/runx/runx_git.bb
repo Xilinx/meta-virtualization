@@ -2,7 +2,7 @@ HOMEPAGE = "https://github.com/lf-edge/runx"
 SUMMARY = "runx stuff"
 DESCRIPTION = "Xen Runtime for OCI"
 
-SRCREV_runx = "da0c75c58ae5232d19b1791c33545db3225e1ea9"
+SRCREV_runx = "784ecb6137abafc8a411f65116ef9531ff4e40ab"
 SRC_URI = "\
 	  git://github.com/lf-edge/runx;nobranch=1;name=runx \
           https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.15.tar.xz;destsuffix=git/kernel/build \

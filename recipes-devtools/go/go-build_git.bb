@@ -2,7 +2,7 @@ HOMEPAGE = "https://github.com/lf-edge/runx"
 SUMMARY = "console for runx"
 DESCRIPTION = "Xen Runtime for OCI"
 
-SRCREV_runx = "da0c75c58ae5232d19b1791c33545db3225e1ea9"
+SRCREV_runx = "784ecb6137abafc8a411f65116ef9531ff4e40ab"
 SRCREV_runc = "e4363b038787addfa12e8b0acf5417d4fba01693"
 
 SRC_URI = "\
