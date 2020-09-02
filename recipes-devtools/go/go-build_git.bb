@@ -2,12 +2,12 @@ HOMEPAGE = "https://github.com/lf-edge/runx"
 SUMMARY = "console for runx"
 DESCRIPTION = "Xen Runtime for OCI"
 
-SRCREV_runx ?= "784ecb6137abafc8a411f65116ef9531ff4e40ab"
+SRCREV_runx ??= "784ecb6137abafc8a411f65116ef9531ff4e40ab"
 SRCREV_runc = "e4363b038787addfa12e8b0acf5417d4fba01693"
 
-BRANCH ?= ""
-REPO ?= "git://github.com/lf-edge/runx"
-REPO_BRANCH ?= "${@['nobranch=1', 'branch=${BRANCH}'][d.getVar('BRANCH', True) != '']}"
+BRANCH ??= ""
+REPO ??= "git://github.com/lf-edge/runx"
+REPO_BRANCH ??= "${@['nobranch=1', 'branch=${BRANCH}'][d.getVar('BRANCH', True) != '']}"
 
 SRC_URI = "\
 	  ${REPO};${REPO_BRANCH};name=runx \

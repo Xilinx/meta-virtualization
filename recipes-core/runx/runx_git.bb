@@ -2,11 +2,11 @@ HOMEPAGE = "https://github.com/lf-edge/runx"
 SUMMARY = "runx stuff"
 DESCRIPTION = "Xen Runtime for OCI"
 
-BRANCH ?= ""
-REPO ?= "git://github.com/lf-edge/runx"
-REPO_BRANCH ?= "${@['nobranch=1', 'branch=${BRANCH}'][d.getVar('BRANCH', True) != '']}" 
+BRANCH ??= ""
+REPO ??= "git://github.com/lf-edge/runx"
+REPO_BRANCH ??= "${@['nobranch=1', 'branch=${BRANCH}'][d.getVar('BRANCH', True) != '']}" 
 
-SRCREV_runx ?= "784ecb6137abafc8a411f65116ef9531ff4e40ab"
+SRCREV_runx ??= "784ecb6137abafc8a411f65116ef9531ff4e40ab"
 SRC_URI = "\
 	  ${REPO};${REPO_BRANCH};name=runx \
           https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.15.tar.xz;destsuffix=git/kernel/build \
