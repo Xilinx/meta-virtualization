@@ -1,16 +1,16 @@
 DESCRIPTION = "The Go language implementation of gRPC. HTTP/2 based RPC"
 HOMEPAGE = "https://github.com/grpc/grpc-go"
 SECTION = "devel/go"
-LICENSE = "BSD"
-LIC_FILES_CHKSUM = "file://src/${PKG_NAME}/LICENSE;md5=a4bad33881612090c6035d8393175996"
+LICENSE = "Apache-2.0"
+LIC_FILES_CHKSUM = "file://src/${PKG_NAME}/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRCNAME = "grpc-go"
 
 PKG_NAME = "google.golang.org/grpc"
-SRC_URI = "git://github.com/grpc/${SRCNAME}.git;destsuffix=git/src/${PKG_NAME}"
+SRC_URI = "git://github.com/grpc/${SRCNAME}.git;destsuffix=git/src/${PKG_NAME};branch=master;protocol=https"
 
-SRCREV = "777daa17ff9b5daef1cfdf915088a2ada3332bf0"
-PV = "1.4.0+git${SRCPV}"
+SRCREV = "5d8e5aad40bedb696205b96b786f1d0e1326b3f8"
+PV = "1.41.0+git${SRCPV}"
 
 S = "${WORKDIR}/git"
 
@@ -36,6 +36,6 @@ go_grpc_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${prefix}/local/go/src/${PKG_NAME}/* \
 "

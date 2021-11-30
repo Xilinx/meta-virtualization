@@ -12,7 +12,7 @@ DEPENDS = "\
            spf13-pflag \
           "
 
-SRC_URI = "git://github.com/opencontainers/image-tools.git \
+SRC_URI = "git://github.com/opencontainers/image-tools.git;branch=master;protocol=https \
            file://0001-config-make-Config.User-mapping-errors-a-warning.patch \
            file://0001-tool-respect-GO-and-GOBUILDFLAGS-when-building.patch"
 
@@ -50,6 +50,8 @@ do_compile() {
 	export LDFLAGS=""
 	export CGO_CFLAGS="${BUILDSDK_CFLAGS} --sysroot=${STAGING_DIR_TARGET}"
 	export CGO_LDFLAGS="${BUILDSDK_LDFLAGS} --sysroot=${STAGING_DIR_TARGET}"
+	export GO111MODULE=off
+
 	cd ${S}/src/import
 
 	oe_runmake tool
@@ -60,4 +62,4 @@ do_install() {
 	install ${S}/src/import/oci-image-tool ${D}/${sbindir}/
 }
 
-INSANE_SKIP_${PN} += "ldflags textrel"
+INSANE_SKIP:${PN} += "ldflags textrel"

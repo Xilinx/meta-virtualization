@@ -14,20 +14,31 @@ inherit go
 inherit goarch
 inherit pkgconfig
 
-PACKAGECONFIG ??= "static"
 PACKAGECONFIG[seccomp] = "seccomp,,libseccomp"
+PACKAGECONFIG[selinux] = "selinux,,libselinux"
 # This PACKAGECONFIG serves the purpose of whether building runc as static or not
 PACKAGECONFIG[static] = ""
 
+PACKAGECONFIG ??= "static \
+                   ${@bb.utils.contains('DISTRO_FEATURES', 'seccomp', 'seccomp', '', d)} \
+                   ${@bb.utils.contains('DISTRO_FEATURES', 'selinux', 'selinux', '', d)} \
+	          "
+
+
 PROVIDES += "virtual/runc"
-RPROVIDES_${PN} = "virtual/runc"
+RPROVIDES:${PN} = "virtual-runc"
 
 GO_IMPORT = "import"
 
 LIBCONTAINER_PACKAGE="github.com/opencontainers/runc/libcontainer"
 
 do_configure[noexec] = "1"
-EXTRA_OEMAKE="BUILDTAGS='${PACKAGECONFIG_CONFARGS}' GO=${GO}"
+
+
+DISTRO_BUILDTAGS ?= "${@bb.utils.contains('DISTRO_FEATURES', 'seccomp', 'seccomp', '', d)} \
+                     ${@bb.utils.contains('DISTRO_FEATURES', 'selinux', 'selinux', '', d)}"
+
+EXTRA_OEMAKE="BUILDTAGS='${PACKAGECONFIG_CONFARGS} ${DISTRO_BUILDTAGS}' GO=${GO}"
 
 do_compile() {
 	# Set GOPATH. See 'PACKAGERS.md'. Don't rely on

@@ -1,4 +1,5 @@
-SRCREV ?= "ad844aa352559a8b1f36e391a27d9d7dbddbdc36"
+# 4.14.3 release SHA
+SRCREV ?= "9f2b6c5ec2ded4c1caf149743e862c5f15d6d083"
 
 XEN_REL ?= "4.14"
 XEN_BRANCH ?= "stable-${XEN_REL}"

@@ -3,7 +3,7 @@ SUMMARY = "Convert `docker inspect` to opencontainers (OCI compatible) runc spec
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=20ce4c6a4f32d6ee4a68e3a7506db3f1"
 
-SRC_URI = "git://github.com/jfrazelle/riddler;branch=master \
+SRC_URI = "git://github.com/jfrazelle/riddler;branch=master;protocol=https \
            file://0001-build-use-to-select-cross-compiler.patch \
           "
 
@@ -18,7 +18,7 @@ inherit go
 
 # In addition to hosts go does not like, we do not build for mips.
 #
-COMPATIBLE_HOST_mipsarch = "null"
+COMPATIBLE_HOST:mipsarch = "null"
 
 # This disables seccomp and apparmor, which are on by default in the
 # go package. 
@@ -46,6 +46,8 @@ do_compile() {
 	export LDFLAGS=""
 	export CGO_CFLAGS="${BUILDSDK_CFLAGS} --sysroot=${STAGING_DIR_TARGET}"
 	export CGO_LDFLAGS="${BUILDSDK_LDFLAGS} --sysroot=${STAGING_DIR_TARGET}"
+	export GO111MODULE=off
+
 	cd ${S}/src/import
 
 	oe_runmake static

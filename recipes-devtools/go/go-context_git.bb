@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=c50f6bd9c1e15ed0bad3bea18e3c1b7f"
 SRCNAME = "context"
 
 PKG_NAME = "github.com/gorilla/${SRCNAME}"
-SRC_URI = "git://${PKG_NAME}.git"
+SRC_URI = "git://${PKG_NAME}.git;branch=master;protocol=https"
 
 SRCREV = "14f550f51af52180c2eefed15e5fd18d63c0a64a"
 
@@ -25,4 +25,4 @@ go_context_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
+FILES:${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"

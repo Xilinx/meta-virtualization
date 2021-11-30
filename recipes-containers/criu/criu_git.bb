@@ -13,21 +13,19 @@ EXCLUDE_FROM_WORLD = "1"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=412de458544c1cb6a2b512cd399286e2"
 
-SRCREV = "c703e3fd8404e506cc6156719b953ea0580d59a4"
-PV = "3.13+git${SRCPV}"
+SRCREV = "e49ce513c8df43e8d3b30b7acfbe7bd496d89862"
+PV = "3.14+git${SRCPV}"
 
-SRC_URI = "git://github.com/checkpoint-restore/criu.git \
-           file://0001-criu-Fix-toolchain-hardcode.patch \
+SRC_URI = "git://github.com/checkpoint-restore/criu.git;branch=criu-dev;protocol=https \
            file://0002-criu-Skip-documentation-install.patch \
            file://0001-criu-Change-libraries-install-directory.patch \
            file://lib-Makefile-overwrite-install-lib-to-allow-multiarc.patch \
-           file://0001-criu-fix-build-failure-against-gcc-10.patch \
           "
 
 COMPATIBLE_HOST = "(x86_64|arm|aarch64).*-linux"
 
 DEPENDS += "libnl libcap protobuf-c-native protobuf-c util-linux-native libbsd libnet"
-RDEPENDS_${PN} = "bash"
+RDEPENDS:${PN} = "bash"
 
 S = "${WORKDIR}/git"
 
@@ -36,17 +34,17 @@ S = "${WORKDIR}/git"
 # if the ARCH is ARMv7 or ARMv6.
 # ARM BSPs need set CRIU_BUILD_ARCH variable for building CRIU.
 #
-EXTRA_OEMAKE_arm += "ARCH=arm UNAME-M=${CRIU_BUILD_ARCH} WERROR=0"
-EXTRA_OEMAKE_x86-64 += "ARCH=x86 WERROR=0"
-EXTRA_OEMAKE_aarch64 += "ARCH=aarch64 WERROR=0"
+EXTRA_OEMAKE:arm += "ARCH=arm UNAME-M=${CRIU_BUILD_ARCH} WERROR=0"
+EXTRA_OEMAKE:x86-64 += "ARCH=x86 WERROR=0"
+EXTRA_OEMAKE:aarch64 += "ARCH=aarch64 WERROR=0"
 
-EXTRA_OEMAKE_append += "SBINDIR=${sbindir} LIBDIR=${libdir} INCLUDEDIR=${includedir} PIEGEN=no"
-EXTRA_OEMAKE_append += "LOGROTATEDIR=${sysconfdir} SYSTEMDUNITDIR=${systemd_unitdir}"
+EXTRA_OEMAKE:append += "SBINDIR=${sbindir} LIBDIR=${libdir} INCLUDEDIR=${includedir} PIEGEN=no"
+EXTRA_OEMAKE:append += "LOGROTATEDIR=${sysconfdir} SYSTEMDUNITDIR=${systemd_unitdir}"
 
 CFLAGS += "-D__USE_GNU -D_GNU_SOURCE " 
 
 CFLAGS += " -I${STAGING_INCDIR} -I${STAGING_INCDIR}/libnl3"
-CFLAGS_arm += "-D__WORDSIZE"
+CFLAGS:arm += "-D__WORDSIZE"
 
 # overide LDFLAGS to allow criu to build without: "x86_64-poky-linux-ld: unrecognized option '-Wl,-O1'"
 export LDFLAGS=""
@@ -65,7 +63,7 @@ PACKAGECONFIG[selinux] = ",,libselinux"
 
 CLEANBROKEN = "1"
 
-do_compile_prepend() {
+do_compile:prepend() {
     rm -rf ${S}/images/google/protobuf/descriptor.proto
     ln -s  ${PKG_CONFIG_SYSROOT_DIR}/usr/include/google/protobuf/descriptor.proto ${S}/images/google/protobuf/descriptor.proto
 }
@@ -85,13 +83,13 @@ do_install () {
     sed -i 's%^\#\!.*%\#\!/usr/bin/env python3%g' ${D}/usr/bin/crit
 }
 
-FILES_${PN} += "${systemd_unitdir}/ \
+FILES:${PN} += "${systemd_unitdir}/ \
             ${libdir}/python3*/site-packages/ \
             ${libdir}/pycriu/ \
             ${libdir}/crit-0.0.1-py3*.egg-info \
             "
 
-FILES_${PN}-staticdev += " \
+FILES:${PN}-staticdev += " \
             ${libexecdir}/compel/std.lib.a \
             ${libexecdir}/compel/fds.lib.a \
             "

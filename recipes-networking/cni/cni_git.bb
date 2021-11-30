@@ -9,22 +9,23 @@ Because of this focus, CNI has a wide range of support and the specification \
 is simple to implement. \
 "
 
-SRCREV_cni = "4cfb7b568922a3c79a23e438dc52fe537fc9687e"
-# Version 0.8.5
-SRCREV_plugins = "1f33fb729ae2b8900785f896df2dc1f6fe5e8239"
+SRCREV_cni = "b5ab16f010e822936eb974690ecec38ba69afc01"
+# Version 0.9.1
+SRCREV_plugins = "78702e9d8a2cdb6931fab433f1d1e6789162954f"
+SRCREV_FORMAT = "cni_plugins"
 SRC_URI = "\
-	git://github.com/containernetworking/cni.git;nobranch=1;name=cni \
-        git://github.com/containernetworking/plugins.git;nobranch=1;destsuffix=${S}/src/github.com/containernetworking/plugins;name=plugins \
+	git://github.com/containernetworking/cni.git;nobranch=1;name=cni;protocol=https \
+        git://github.com/containernetworking/plugins.git;nobranch=1;destsuffix=${S}/src/github.com/containernetworking/plugins;name=plugins;protocol=https \
 	"
 
-RPROVIDES_${PN} += "kubernetes-cni"
+RPROVIDES:${PN} += "kubernetes-cni"
 
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=fa818a259cbed7ce8bc2a22d35a464fc"
 
 GO_IMPORT = "import"
 
-PV = "0.7.1+git${SRCREV_cni}"
+PV = "v0.8.0+git${SRCREV_cni}"
 
 inherit go
 inherit goarch
@@ -32,6 +33,8 @@ inherit goarch
 do_compile() {
 	mkdir -p ${S}/src/github.com/containernetworking
 	ln -sfr ${S}/src/import ${S}/src/github.com/containernetworking/cni
+
+	export GO111MODULE=off
 
 	cd ${B}/src/github.com/containernetworking/cni/libcni
 	${GO} build
@@ -45,7 +48,7 @@ do_compile() {
 	for p in $PLUGINS; do
 	    plugin="$(basename "$p")"
 	    echo "building: $p"
-	    ${GO} build -mod=vendor -o ${B}/plugins/bin/$plugin github.com/containernetworking/plugins/$p
+	    ${GO} build -o ${B}/plugins/bin/$plugin github.com/containernetworking/plugins/$p
 	done
 }
 
@@ -63,8 +66,10 @@ do_install() {
     ln -sf ${libexecdir}/cni/ ${D}/opt/cni/bin
 }
 
-FILES_${PN} += "${libexecdir}/cni/* /opt/cni/bin"
+FILES:${PN} += "${libexecdir}/cni/* /opt/cni/bin"
 
-INSANE_SKIP_${PN} += "ldflags already-stripped"
+INSANE_SKIP:${PN} += "ldflags already-stripped"
 
 deltask compile_ptest_base
+
+RDEPENDS:${PN} += " ca-certificates"

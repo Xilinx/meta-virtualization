@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=c50f6bd9c1e15ed0bad3bea18e3c1b7f"
 SRCNAME = "mux"
 
 PKG_NAME = "github.com/gorilla/${SRCNAME}"
-SRC_URI = "git://${PKG_NAME}.git"
+SRC_URI = "git://${PKG_NAME}.git;branch=master;protocol=https"
 
 SRCREV = "136d54f81f00414c45c3c68dd47e98cc97519c5e"
 
@@ -25,4 +25,4 @@ go_mux_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
+FILES:${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"

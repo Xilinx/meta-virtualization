@@ -3,8 +3,8 @@ SUMMARY = "The Docker toolset to pack, ship, store, and deliver content"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=d2794c0df5b907fdace235a619d80314"
 
-SRCREV_distribution="2461543d988979529609e8cb6fca9ca190dc48da"
-SRC_URI = "git://github.com/docker/distribution.git;branch=release/2.7;name=distribution;destsuffix=git/src/github.com/docker/distribution \
+SRCREV_distribution="61e7e208239878249a7ee4dae3c16c2d08a32d19"
+SRC_URI = "git://github.com/docker/distribution.git;branch=release/2.7;name=distribution;destsuffix=git/src/github.com/docker/distribution;protocol=https \
            file://docker-registry.service \
            file://0001-build-use-to-use-cross-go-compiler.patch \
           "
@@ -35,6 +35,7 @@ do_compile() {
 	export CGO_CFLAGS="${BUILDSDK_CFLAGS} --sysroot=${STAGING_DIR_TARGET}"
 	export GO_GCFLAGS=""
 	export CGO_LDFLAGS="${BUILDSDK_LDFLAGS} --sysroot=${STAGING_DIR_TARGET}"
+	export GO111MODULE=off
 
 	cd ${S}
 
@@ -57,17 +58,17 @@ do_install() {
 	install -d ${D}/${localstatedir}/lib/registry/
 }
 
-INSANE_SKIP_${PN} += "ldflags already-stripped"
-INSANE_SKIP_${MLPREFIX}docker-registry += "ldflags already-stripped textrel"
+INSANE_SKIP:${PN} += "ldflags already-stripped"
+INSANE_SKIP:${MLPREFIX}docker-registry += "ldflags already-stripped textrel"
 
-FILES_docker-registry = "${sbindir}/*"
-FILES_docker-registry += "${systemd_unitdir}/system/docker-registry.service"
-FILES_docker-registry += "${sysconfdir}/docker-distribution/*"
-FILES_docker-registry += "${localstatedir}/lib/registry/"
+FILES:docker-registry = "${sbindir}/*"
+FILES:docker-registry += "${systemd_unitdir}/system/docker-registry.service"
+FILES:docker-registry += "${sysconfdir}/docker-distribution/*"
+FILES:docker-registry += "${localstatedir}/lib/registry/"
 
-SYSTEMD_SERVICE_docker-registry = "${@bb.utils.contains('DISTRO_FEATURES','systemd','docker-registry.service','',d)}"
-SYSTEMD_AUTO_ENABLE_docker-registry = "enable"
+SYSTEMD_SERVICE:docker-registry = "${@bb.utils.contains('DISTRO_FEATURES','systemd','docker-registry.service','',d)}"
+SYSTEMD_AUTO_ENABLE:docker-registry = "enable"
 
-RDEPENDS_${PN}-ptest_remove = "${PN}"
+RDEPENDS:${PN}-ptest:remove = "${PN}"
 
 CVE_PRODUCT = "docker_registry"

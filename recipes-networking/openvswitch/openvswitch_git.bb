@@ -4,7 +4,7 @@ DEPENDS += "virtual/kernel"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RDEPENDS_${PN}-ptest += "\
+RDEPENDS:${PN}-ptest += "\
 	python3-logging python3-syslog python3-io python3-core \
 	python3-fcntl python3-shell python3-xml python3-math \
 	python3-datetime python3-netclient python3 sed \
@@ -14,24 +14,20 @@ RDEPENDS_${PN}-ptest += "\
 	"
 
 S = "${WORKDIR}/git"
-PV = "2.13+${SRCPV}"
+PV = "2.15.1+${SRCPV}"
+CVE_VERSION = "2.13.0"
 
-FILESEXTRAPATHS_append := "${THISDIR}/${PN}-git:"
+FILESEXTRAPATHS:append := "${THISDIR}/${PN}-git:"
 
-SRCREV = "71d553b995d0bd527d3ab1e9fbaf5a2ae34de2f3"
-SRC_URI = "file://openvswitch-switch \
-           file://openvswitch-switch-setup \
-           file://openvswitch-testcontroller \
-           file://openvswitch-testcontroller-setup \
-           git://github.com/openvswitch/ovs.git;protocol=git;branch=branch-2.13 \
-           file://openvswitch-add-ptest-71d553b995d0bd527d3ab1e9fbaf5a2ae34de2f3.patch \
-           file://run-ptest \
-           file://disable_m4_check.patch \
-           file://kernel_module.patch \
-           file://python-switch-remaining-scripts-to-use-python3.patch \
-           file://systemd-update-tool-paths.patch \
-           file://systemd-create-runtime-dirs.patch \
-           file://0001-ovs-use-run-instead-of-var-run-for-in-systemd-units.patch \
+SRCREV = "f8274b78c3403591e84f3c2bbacf8c86920d68ba"
+SRC_URI += "git://github.com/openvswitch/ovs.git;protocol=https;branch=branch-2.15 \
+            file://openvswitch-add-ptest-71d553b995d0bd527d3ab1e9fbaf5a2ae34de2f3.patch \
+            file://run-ptest \
+            file://disable_m4_check.patch \
+            file://kernel_module.patch \
+            file://systemd-update-tool-paths.patch \
+            file://systemd-create-runtime-dirs.patch \
+            file://0001-ovs-use-run-instead-of-var-run-for-in-systemd-units.patch \
            "
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1ce5d23a6429dff345518758f13aaeab"
@@ -49,7 +45,7 @@ PACKAGECONFIG[ssl] = ",--disable-ssl,openssl,"
 # EXTRA_OECONF += "--with-linux=${STAGING_KERNEL_BUILDDIR} --with-linux-source=${STAGING_KERNEL_DIR} KARCH=${TARGET_ARCH}"
 
 # silence a warning
-FILES_${PN} += "/lib/modules"
+FILES:${PN} += "/lib/modules"
 
 inherit ptest
 
@@ -59,6 +55,6 @@ do_install_ptest() {
 	oe_runmake test-install
 }
 
-do_install_append() {
+do_install:append() {
 	oe_runmake modules_install INSTALL_MOD_PATH=${D}
 }

@@ -1,31 +1,46 @@
 DESCRIPTION = "A fast and low-memory footprint OCI Container Runtime fully written in C."
-LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 PRIORITY = "optional"
 
-SRCREV_crun = "a43f72196f7aaf713dc997eaddd0f08612f60ac0"
-SRCREV_libocispec = "01c8f977ff5ed1e8010f40c2572343be1a70a51b"
-SRCREV_ispec = "775207bd45b6cb8153ce218cc59351799217451f"
-SRCREV_rspec = "19e92ca817772b4466f2ed2b8d808dfb7a8ab4be"
+SRCREV_crun = "360f5d02c37d5f7a67d38622010228ae2eeb80f1"
+SRCREV_libocispec = "fb3c221d5849de9184f88b6929ce4a8c8fb55be9"
+SRCREV_ispec = "54a822e528b91c8db63b873ad56daf200a2e5e61"
+SRCREV_rspec = "ab23082b188344f6fbb63a441ea00ffc2852d06d"
+SRCREV_yajl = "f344d21280c3e4094919fd318bc5ce75da91fc06"
 
 SRCREV_FORMAT = "crun_rspec"
-SRC_URI = "git://github.com/containers/crun.git;branch=main;name=crun \
-           git://github.com/containers/libocispec.git;branch=main;name=libocispec;destsuffix=git/libocispec \
-           git://github.com/opencontainers/runtime-spec.git;branch=master;name=rspec;destsuffix=git/libocispec/runtime-spec \
-           git://github.com/opencontainers/image-spec.git;branch=master;name=ispec;destsuffix=git/libocispec/image-spec \
+SRC_URI = "git://github.com/containers/crun.git;branch=main;name=crun;protocol=https \
+           git://github.com/containers/libocispec.git;branch=main;name=libocispec;destsuffix=git/libocispec;protocol=https \
+           git://github.com/opencontainers/runtime-spec.git;branch=main;name=rspec;destsuffix=git/libocispec/runtime-spec;protocol=https \
+           git://github.com/opencontainers/image-spec.git;branch=main;name=ispec;destsuffix=git/libocispec/image-spec;protocol=https \
+           git://github.com/containers/yajl.git;branch=main;name=yajl;destsuffix=git/libocispec/yajl;protocol=https \
           "
 
-PV = "0.10.2+git${SRCREV_crun}"
+PV = "0.18+git${SRCREV_crun}"
 S = "${WORKDIR}/git"
 
-inherit autotools-brokensep pkgconfig
+REQUIRED_DISTRO_FEATURES ?= "systemd"
+
+inherit autotools-brokensep pkgconfig features_check
 
 PACKAGECONFIG ??= ""
 
-DEPENDS = "yajl libcap go-md2man-native"
+inherit features_check
+REQUIRED_DISTRO_FEATURES ?= "seccomp"
+
+DEPENDS = "yajl libcap go-md2man-native m4-native"
 # TODO: is there a packageconfig to turn this off ?
 DEPENDS += "libseccomp"
+DEPENDS += "systemd"
 DEPENDS += "oci-image-spec oci-runtime-spec"
+
+do_configure:prepend () {
+    # extracted from autogen.sh in crun source. This avoids
+    # git submodule fetching.
+    mkdir -p m4
+    autoreconf -fi
+}
 
 do_install() {
     oe_runmake 'DESTDIR=${D}' install

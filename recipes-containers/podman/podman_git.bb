@@ -6,6 +6,9 @@ DESCRIPTION = "Podman is a daemonless container engine for developing, \
     `alias docker=podman`. \
     "
 
+inherit features_check
+REQUIRED_DISTRO_FEATURES ?= "seccomp ipv6"
+
 DEPENDS = " \
     go-metalinter-native \
     go-md2man-native \
@@ -14,29 +17,19 @@ DEPENDS = " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)} \
 "
 
-python __anonymous() {
-    msg = ""
-    # ERROR: Nothing PROVIDES 'libseccomp' (but meta-virtualization/recipes-containers/podman/ DEPENDS on or otherwise requires it).
-    # ERROR: Required build target 'meta-world-pkgdata' has no buildable providers.
-    # Missing or unbuildable dependency chain was: ['meta-world-pkgdata', 'podman', 'libseccomp']
-    if 'security' not in d.getVar('BBFILE_COLLECTIONS').split():
-        msg += "Make sure meta-security should be present as it provides 'libseccomp'"
-        raise bb.parse.SkipRecipe(msg)
-}
-
-SRCREV = "ce7b78a43a386d53a6e4a2688f7ce0aa99511498"
+SRCREV = "6e8de00bb224f9931d7402648f0177e7357ed079"
 SRC_URI = " \
-    git://github.com/containers/libpod.git;branch=v2.0 \
+    git://github.com/containers/libpod.git;branch=v3.4;protocol=https \
 "
 
 LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=e3fc50a88d0a364313df4b21ef20c29e"
+LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=3d9b931fa23ab1cacd0087f9e2ee12c0"
 
 GO_IMPORT = "import"
 
 S = "${WORKDIR}/git"
 
-PV = "2.0.7+git${SRCPV}"
+PV = "3.4.0+git${SRCPV}"
 
 PACKAGES =+ "${PN}-contrib"
 
@@ -78,8 +71,6 @@ do_compile() {
 
 	cd ${S}/src/.gopath/src/"${PODMAN_PKG}"
 
-	oe_runmake pkg/varlink/iopodman.go GO=go
-
 	# Pass the needed cflags/ldflags so that cgo
 	# can find the needed headers files and libraries
 	export GOARCH=${TARGET_GOARCH}
@@ -109,15 +100,15 @@ do_install() {
 	fi
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${systemd_unitdir}/system/* \
     ${systemd_unitdir}/user/* \
     ${nonarch_libdir}/tmpfiles.d/* \
     ${sysconfdir}/cni \
 "
 
-SYSTEMD_SERVICE_${PN} = "podman.service podman.socket"
+SYSTEMD_SERVICE:${PN} = "podman.service podman.socket"
 
-RDEPENDS_${PN} += "conmon virtual/runc iptables cni skopeo"
-RRECOMMENDS_${PN} += "slirp4netns"
-RCONFLICTS_${PN} = "${@bb.utils.contains('PACKAGECONFIG', 'docker', 'docker', '', d)}"
+RDEPENDS:${PN} += "conmon virtual-runc iptables cni skopeo"
+RRECOMMENDS:${PN} += "slirp4netns kernel-module-xt-masquerade kernel-module-xt-comment"
+RCONFLICTS:${PN} = "${@bb.utils.contains('PACKAGECONFIG', 'docker', 'docker', '', d)}"

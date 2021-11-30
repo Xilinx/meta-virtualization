@@ -5,10 +5,10 @@ LIC_FILES_CHKSUM = "file://src/github.com/kata-containers/agent/LICENSE;md5=86d3
 
 GO_IMPORT = "github.com/kata-containers/agent"
 SRCREV = "e03f7d7453fabffb17e1540f28666c26178d3cbf"
-SRC_URI = "git://${GO_IMPORT}.git \
+SRC_URI = "git://${GO_IMPORT}.git;branch=master \
           "
 
-RDEPENDS_${PN}-dev_append = "bash"
+RDEPENDS:${PN}-dev:append = "bash"
 
 S = "${WORKDIR}/git"
 
@@ -36,4 +36,4 @@ do_install() {
 
 deltask compile_ptest_base
 
-FILES_${PN} += "${systemd_unitdir}/*"
+FILES:${PN} += "${systemd_unitdir}/*"

@@ -14,15 +14,16 @@ SRCREV_pflag = "6971c29c4a22981adeaee7f4b437c0cffe08c031"
 SRCREV_logging = "b2cb9fa56473e98db8caba80237377e83fe44db5"
 SRCREV_yaml = "eeeca48fe7764f320e4870d231902bf9c1be2c08"
 
-SRC_URI = "git://${GO_IMPORT};name=yq \
-           git://github.com/fatih/color;name=color;destsuffix=build/vendor/src/github.com/fatih/color \
-           git://github.com/goccy/go-yaml;name=lexer;destsuffix=build/vendor/src/github.com/goccy/go-yaml/ \
-           git://github.com/kylelemons/godebug;name=debug;destsuffix=build/vendor/src/github.com/kylelemons/godebug/ \
-	   git://github.com/pkg/errors;name=errors;destsuffix=build/vendor/src/github.com/pkg/errors/ \
-	   git://github.com/spf13/cobra;name=cobra;destsuffix=build/vendor/src/github.com/spf13/cobra \
-	   git://github.com/spf13/pflag;name=pflag;destsuffix=build/vendor/src/github.com/spf13/pflag \
-	   git://github.com/op/go-logging.git;name=logging;destsuffix=build/vendor/src/gopkg.in/op/go-logging.v1 \
-	   git://github.com/go-yaml/yaml.git;name=yaml;branch=v3;destsuffix=build/vendor/src/gopkg.in/yaml.v3 \
+SRCREV_FORMAT = "yq_color"
+SRC_URI = "git://${GO_IMPORT};name=yq;branch=master \
+           git://github.com/fatih/color;name=color;destsuffix=build/vendor/src/github.com/fatih/color;branch=master;protocol=https \
+           git://github.com/goccy/go-yaml;name=lexer;destsuffix=build/vendor/src/github.com/goccy/go-yaml/;branch=master;protocol=https \
+           git://github.com/kylelemons/godebug;name=debug;destsuffix=build/vendor/src/github.com/kylelemons/godebug/;branch=master;protocol=https \
+	   git://github.com/pkg/errors;name=errors;destsuffix=build/vendor/src/github.com/pkg/errors/;branch=master;protocol=https \
+	   git://github.com/spf13/cobra;name=cobra;destsuffix=build/vendor/src/github.com/spf13/cobra;branch=master;protocol=https \
+	   git://github.com/spf13/pflag;name=pflag;destsuffix=build/vendor/src/github.com/spf13/pflag;branch=master;protocol=https \
+	   git://github.com/op/go-logging.git;name=logging;destsuffix=build/vendor/src/gopkg.in/op/go-logging.v1;branch=master;protocol=https \
+	   git://github.com/go-yaml/yaml.git;name=yaml;branch=v3;destsuffix=build/vendor/src/gopkg.in/yaml.v3;protocol=https \
            "
 
 PV = "1.13.1+git${SRCREV_yq}"
@@ -30,7 +31,7 @@ GO_IMPORT = "github.com/mikefarah/yq"
 
 inherit go
 
-do_compile_prepend() {
+do_compile:prepend() {
     # arrange for some of the golang built ins to be found
     (
 	cd ${WORKDIR}/build/src/
@@ -39,10 +40,11 @@ do_compile_prepend() {
 
     # arrange for the fetched dependencies to be found
     export GOPATH="${GOPATH}:${WORKDIR}/build/vendor/"
+    export GO111MODULE=off
 }
 
 
-do_install_append() {
+do_install:append() {
     # these bring in dependencies for the -dev package on bash, and we don't
     # need them .. so we remove them to avoid needing that rdepends
     rm -rf ${D}/${prefix}/lib/go/src/${GO_IMPORT}/debian/rules

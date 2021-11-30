@@ -1,16 +1,16 @@
 DESCRIPTION = "Drop-in replacement for Go's flag package, implementing POSIX/GNU-style --flags."
 HOMEPAGE = "https://github.com/spf13/pflag"
 SECTION = "devel/go"
-LICENSE = "BSD"
+LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://src/${PKG_NAME}/LICENSE;md5=1e8b7dc8b906737639131047a590f21d"
 
 SRCNAME = "pflag"
 
 PKG_NAME = "github.com/spf13/${SRCNAME}"
-SRC_URI = "git://${PKG_NAME}.git;destsuffix=git/src/${PKG_NAME}"
+SRC_URI = "git://${PKG_NAME}.git;destsuffix=git/src/${PKG_NAME};branch=master;protocol=https"
 
-SRCREV = "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
-PV = "v1.0.0-rc4+git${SRCPV}"
+SRCREV = "d5e0c0615acee7028e1e2740a11102313be88de1"
+PV = "v1.0.5+git${SRCPV}"
 
 S = "${WORKDIR}/git"
 
@@ -36,6 +36,6 @@ pflag_file_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
+FILES:${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
 
 CLEANBROKEN = "1"

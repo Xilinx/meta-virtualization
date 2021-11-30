@@ -1,6 +1,7 @@
-SRCREV ?= "9dc687f155a57216b83b17f9cde55dd43e06b0cd"
+# master status on 2020-10-21
+SRCREV ?= "23ec1ebc8acbfd2bf06f6085a776f0db923f9fa9"
 
-XEN_REL ?= "4.15"
+XEN_REL ?= "4.16"
 XEN_BRANCH ?= "master"
 
 SRC_URI = " \

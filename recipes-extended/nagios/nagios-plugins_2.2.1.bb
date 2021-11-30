@@ -18,6 +18,8 @@ S = "${WORKDIR}/${BPN}-${PV}"
 
 inherit autotools gettext
 
+PNBLACKLIST[nagios-plugins] ?= "${@bb.utils.contains('BBFILE_COLLECTIONS', 'webserver', '', 'Depends on nagios-core which depends on apache2 from meta-webserver which is not included', d)}"
+
 EXTRA_OECONF += "--with-sysroot=${STAGING_DIR_HOST} \
                  --with-nagios-user=${NAGIOS_USER} \
                  --with-nagios-group=${NAGIOS_GROUP} \
@@ -57,17 +59,17 @@ do_configure() {
     oe_runconf || die "make failed"
 }
 
-do_install_append() {
+do_install:append() {
      sed -i '1s,#! /usr/bin/perl -w.*,#! ${bindir}/env perl,' ${D}${libdir}/nagios/plugins/*
 }
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     iputils \
     nagios-base \
     perl \
     bash \
 "
 
-FILES_${PN} += "${datadir} \
+FILES:${PN} += "${datadir} \
                 ${NAGIOS_PLUGIN_DIR} \
 "

@@ -1,16 +1,16 @@
 DESCRIPTION = "Simple error handling primitives"
 HOMEPAGE = "https://github.com/pkg/errors"
 SECTION = "devel/go"
-LICENSE = "BSD"
+LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://src/${PKG_NAME}/LICENSE;md5=6fe682a02df52c6653f33bd0f7126b5a"
 
 SRCNAME = "errors"
 
 PKG_NAME = "github.com/pkg/${SRCNAME}"
-SRC_URI = "git://${PKG_NAME}.git;destsuffix=git/src/${PKG_NAME}"
+SRC_URI = "git://${PKG_NAME}.git;destsuffix=git/src/${PKG_NAME};branch=master;protocol=https"
 
-SRCREV = "248dadf4e9068a0b3e79f02ed0a610d935de5302"
-PV = "v0.8.0+git${SRCPV}"
+SRCREV = "5dd12d0cfe7f152f80558d591504ce685299311e"
+PV = "v0.8.1+git${SRCPV}"
 
 S = "${WORKDIR}/git"
 
@@ -36,6 +36,6 @@ go_errors_file_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
+FILES:${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
 
 CLEANBROKEN = "1"

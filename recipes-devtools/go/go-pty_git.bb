@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://License;md5=93958070863d769117fa33b129020050"
 SRCNAME = "pty"
 
 PKG_NAME = "github.com/creack/${SRCNAME}"
-SRC_URI = "git://${PKG_NAME}.git"
+SRC_URI = "git://${PKG_NAME}.git;branch=master;protocol=https"
 
 SRCREV = "05017fcccf23c823bfdea560dcc958a136e54fb7"
 
@@ -25,4 +25,4 @@ go_pty_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
+FILES:${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"

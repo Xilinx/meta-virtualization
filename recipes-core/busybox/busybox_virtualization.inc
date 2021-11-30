@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/busybox:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/busybox:"
 
 SRC_URI += " \
 	    file://lspci.cfg \
@@ -7,4 +7,5 @@ SRC_URI += " \
 	    file://mount-cifs.cfg \
 	    file://ps-extras.cfg \
 	    file://getopt.cfg \
+	    file://nsenter.cfg \
            "

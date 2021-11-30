@@ -3,7 +3,7 @@ SUMMARY = "oci-runtime-tool is a collection of tools for working with the OCI ru
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=b355a61a394a504dacde901c958f662c"
 
-SRC_URI = "git://github.com/opencontainers/runtime-tools.git \
+SRC_URI = "git://github.com/opencontainers/runtime-tools.git;branch=master;protocol=https \
            file://0001-Revert-implement-add-set-function-for-hooks-items.patch \
            file://0001-build-use-for-cross-compiler.patch \
            "
@@ -12,7 +12,7 @@ SRCREV = "6e7da8148f4de2c9e9c9d3b345576898d4f412cb"
 PV = "0.1.0+git${SRCPV}"
 GO_IMPORT = "import"
 
-INSANE_SKIP_${PN} += "ldflags textrel"
+INSANE_SKIP:${PN} += "ldflags textrel"
 
 inherit goarch
 inherit go
@@ -29,6 +29,7 @@ do_compile() {
 	export LDFLAGS=""
 	export CGO_CFLAGS="${BUILDSDK_CFLAGS} --sysroot=${STAGING_DIR_TARGET}"
 	export CGO_LDFLAGS="${BUILDSDK_LDFLAGS} --sysroot=${STAGING_DIR_TARGET}"
+	export GO111MODULE=off
 
 	# link fixups for compilation
 	rm -f ${S}/src/import/vendor/src

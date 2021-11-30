@@ -17,7 +17,7 @@ PACKAGES = " \
     ${PN}-efi \
     "
 
-FILES_${PN} = " \
+FILES:${PN} = " \
     /boot/xen-* \
     /boot/xen \
     /boot/xen-*.gz \
@@ -25,9 +25,9 @@ FILES_${PN} = " \
     /boot/xen-syms-* \
     "
 
-FILES_${PN}-dbg += "${libdir}/debug/*"
+FILES:${PN}-dbg += "${libdir}/debug/*"
 
-FILES_${PN}-efi = " \
+FILES:${PN}-efi = " \
     /boot/xen.efi \
     ${exec_prefix}/lib64/efi/xen* \
     "
@@ -49,7 +49,8 @@ do_configure() {
 }
 
 do_compile() {
-    oe_runmake xen PYTHON="${PYTHON}"
+    oe_runmake xen PYTHON="${PYTHON}" \
+                   EXTRA_CFLAGS_XEN_CORE="${EXTRA_CFLAGS_XEN_CORE}"
 }
 
 do_install() {

@@ -10,7 +10,7 @@ inherit autotools-brokensep
 
 # This version support the RISC-V v0.5.0 Hypervisor extensions
 SRCREV = "b3dac5b1f61f23f21dc59b3880897cff78f3b618"
-SRC_URI = "git://github.com/avpatel/xvisor-next.git \
+SRC_URI = "git://github.com/avpatel/xvisor-next.git;branch=master;protocol=https \
     file://0001-TESTS-Don-t-specify-mabi-or-march-for-RISC-V.patch \
     file://0001-EMULATORS-Allow-Xvisor-to-compile-with-gcc-10.patch \
 "
@@ -25,7 +25,7 @@ do_configure() {
     oe_runmake ${CONFIG}
 }
 
-do_install_append() {
+do_install:append() {
     install -d ${D}
     install -m 755 ${B}/build/vmm.* ${D}/
 
@@ -44,12 +44,12 @@ do_deploy () {
 
 addtask deploy after do_install
 
-FILES_${PN} += "/vmm.*"
-FILES_${PN} += "/*.dtb"
+FILES:${PN} += "/vmm.*"
+FILES:${PN} += "/*.dtb"
 
 COMPATIBLE_HOST = "(aarch64|riscv64|riscv32).*"
 INHIBIT_PACKAGE_STRIP = "1"
 
 # ERROR: xvisor-git-r0 do_package_qa: QA Issue: File /vmm.elf in package xvisor doesn't have GNU_HASH (didn't pass LDFLAGS?) [ldflags]
 # ERROR: xvisor-git-r0 do_package_qa: QA Issue: xvisor: ELF binary /vmm.elf has relocations in .text [textrel]
-INSANE_SKIP_${PN} += "ldflags textrel"
+INSANE_SKIP:${PN} += "ldflags textrel"

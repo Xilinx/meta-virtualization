@@ -14,9 +14,9 @@ At a high level, we expect the scope of cri-o to be restricted to the following 
  - Resource isolation as required by the CRI \
  "
 
-SRCREV_cri-o = "6d0ffae63b9b7d8f07e7f9cf50736a67fb31faf3"
+SRCREV_cri-o = "1d447191ee73ead59f344f354edac5d64f377e15"
 SRC_URI = "\
-	git://github.com/kubernetes-sigs/cri-o.git;branch=release-1.17;name=cri-o \
+	git://github.com/kubernetes-sigs/cri-o.git;branch=master;name=cri-o;protocol=https \
 	file://0001-Makefile-force-symlinks.patch \
         file://crio.conf \
 	"
@@ -27,7 +27,10 @@ LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=e3fc50a88d0a364313df4b21ef20c2
 
 GO_IMPORT = "import"
 
-PV = "1.17.0+git${SRCREV_cri-o}"
+PV = "1.22.0+git${SRCREV_cri-o}"
+
+inherit features_check
+REQUIRED_DISTRO_FEATURES ?= "seccomp"
 
 DEPENDS = " \
     glib-2.0 \
@@ -38,31 +41,17 @@ DEPENDS = " \
     libseccomp \
     libselinux \
     "
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     cni \
     libdevmapper \
     "
 
-python __anonymous() {
-    msg = ""
-    # ERROR: Nothing PROVIDES 'libseccomp' (but /buildarea/layers/meta-virtualization/recipes-containers/cri-o/cri-o_git.bb DEPENDS on or otherwise requires it).
-    # ERROR: Required build target 'meta-world-pkgdata' has no buildable providers.
-    # Missing or unbuildable dependency chain was: ['meta-world-pkgdata', 'cri-o', 'libseccomp']
-    if 'security' not in d.getVar('BBFILE_COLLECTIONS').split():
-        msg += "Make sure meta-security should be present as it provides 'libseccomp'"
-        raise bb.parse.SkipRecipe(msg)
-    # ERROR: Nothing PROVIDES 'libselinux' (but /buildarea/layers/meta-virtualization/recipes-containers/cri-o/cri-o_git.bb DEPENDS on or otherwise requires it).
-    # ERROR: Required build target 'meta-world-pkgdata' has no buildable providers.
-    # Missing or unbuildable dependency chain was: ['meta-world-pkgdata', 'cri-o', 'libselinux']
-    elif 'selinux' not in d.getVar('BBFILE_COLLECTIONS').split():
-        msg += "Make sure meta-selinux should be present as it provides 'libselinux'"
-        raise bb.parse.SkipRecipe(msg)
-}
+PNBLACKLIST[cri-o] ?= "${@bb.utils.contains('BBFILE_COLLECTIONS', 'security', bb.utils.contains('BBFILE_COLLECTIONS', 'selinux', '', 'Depends on libselinux from meta-selinux which is not included', d), 'Depends on libseccomp from meta-security which is not included', d)}"
 
 PACKAGES =+ "${PN}-config"
 
-RDEPENDS_${PN} += " virtual/containerd virtual/runc"
-RDEPENDS_${PN} += " e2fsprogs-mke2fs conmon util-linux iptables conntrack-tools"
+RDEPENDS:${PN} += " virtual-containerd virtual-runc"
+RDEPENDS:${PN} += " e2fsprogs-mke2fs conmon util-linux iptables conntrack-tools"
 
 inherit systemd
 inherit go
@@ -81,8 +70,8 @@ do_compile() {
 }
 
 SYSTEMD_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES','systemd','${PN}','',d)}"
-SYSTEMD_SERVICE_${PN} = "${@bb.utils.contains('DISTRO_FEATURES','systemd','crio.service','',d)}"
-SYSTEMD_AUTO_ENABLE_${PN} = "enable"
+SYSTEMD_SERVICE:${PN} = "${@bb.utils.contains('DISTRO_FEATURES','systemd','crio.service','',d)}"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 do_install() {
     set +e
@@ -109,15 +98,15 @@ do_install() {
     install -m 0644 ${S}/src/import/contrib/systemd/crio-wipe.service  ${D}${systemd_unitdir}/system/
 }
 
-FILES_${PN}-config = "${sysconfdir}/crio/config/*"
-FILES_${PN} += "${systemd_unitdir}/system/*"
-FILES_${PN} += "/usr/local/bin/*"
-FILES_${PN} += "/usr/share/containers/oci/hooks.d"
+FILES:${PN}-config = "${sysconfdir}/crio/config/*"
+FILES:${PN} += "${systemd_unitdir}/system/*"
+FILES:${PN} += "/usr/local/bin/*"
+FILES:${PN} += "/usr/share/containers/oci/hooks.d"
 
 # don't clobber hooks.d
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-INSANE_SKIP_${PN} += "ldflags already-stripped"
+INSANE_SKIP:${PN} += "ldflags already-stripped"
 
 deltask compile_ptest_base
 

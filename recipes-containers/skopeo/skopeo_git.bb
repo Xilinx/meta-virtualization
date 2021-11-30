@@ -5,7 +5,8 @@ LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=7e611105d3e369954840a6668c4385
 
 DEPENDS = " \
     gpgme \
-    multipath-tools \
+    libdevmapper \
+    lvm2 \
     btrfs-tools \
     glib-2.0 \
     ostree \
@@ -13,20 +14,21 @@ DEPENDS = " \
 
 inherit go
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
      gpgme \
      libgpg-error \
      libassuan \
 "
 
 SRC_URI = " \
-    git://github.com/containers/skopeo \
+    git://github.com/containers/skopeo;branch=release-1.4;protocol=https \
+    file://0001-Makefile-use-pkg-config-instead-of-gpgme-config.patch \
     file://storage.conf \
     file://registries.conf \
 "
 
-SRCREV = "1cf1e06582142c522543560f2bc6d6756696e8ad"
-PV = "v0.1.39-dev+git${SRCPV}"
+SRCREV = "01e51ce610e3cfe1230a10af982e962c4ad1c990"
+PV = "v1.4.1+git${SRCPV}"
 GO_IMPORT = "import"
 
 S = "${WORKDIR}/git"
@@ -63,18 +65,35 @@ do_compile() {
 	export CGO_LDFLAGS="${BUILDSDK_LDFLAGS} --sysroot=${STAGING_DIR_TARGET}"
 	cd ${S}/src/import
 
-	oe_runmake binary-local
+	export GO111MODULE=off
+
+	oe_runmake bin/skopeo
 }
 
 do_install() {
 	install -d ${D}/${sbindir}
 	install -d ${D}/${sysconfdir}/containers
 
-	install ${S}/src/import/skopeo ${D}/${sbindir}/
+	install ${S}/src/import/bin/skopeo ${D}/${sbindir}/
 	install ${S}/src/import/default-policy.json ${D}/${sysconfdir}/containers/policy.json
 
 	install ${WORKDIR}/storage.conf ${D}/${sysconfdir}/containers/storage.conf
 	install ${WORKDIR}/registries.conf ${D}/${sysconfdir}/containers/registries.conf
 }
 
-INSANE_SKIP_${PN} += "ldflags"
+do_install:append:class-native() {
+    create_cmdline_wrapper ${D}/${sbindir}/skopeo \
+        --policy ${sysconfdir}/containers/policy.json
+
+    create_wrapper ${D}/${sbindir}/skopeo.real \
+        LD_LIBRARY_PATH=${STAGING_LIBDIR_NATIVE}
+}
+
+do_install:append:class-nativesdk() {
+    create_cmdline_wrapper ${D}/${sbindir}/skopeo \
+        --policy ${sysconfdir}/containers/policy.json
+}
+
+INSANE_SKIP:${PN} += "ldflags"
+
+BBCLASSEXTEND = "native nativesdk"

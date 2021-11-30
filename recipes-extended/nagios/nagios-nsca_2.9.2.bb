@@ -22,6 +22,8 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit update-rc.d autotools-brokensep systemd dos2unix
 
+PNBLACKLIST[nagios-nsca] ?= "${@bb.utils.contains('BBFILE_COLLECTIONS', 'webserver', '', 'Rdepends on nagios-base provided by nagios-core which depends on apache2 from meta-webserver which is not included', d)}"
+
 DEPENDS = "libmcrypt"
 
 EXTRA_OECONF += "--with-nsca-user=${NAGIOS_USER} \
@@ -59,26 +61,26 @@ do_install() {
 
 PACKAGES = "${PN}-dbg ${PN}-daemon ${PN}-client"
 
-FILES_${PN}-daemon = "${sysconfdir}/init.d \
+FILES:${PN}-daemon = "${sysconfdir}/init.d \
                       ${NAGIOS_CONF_DIR}/nsca.cfg \
                       ${bindir}/nsca \
 "
 
-FILES_${PN}-client = "${NAGIOS_CONF_DIR}/send_nsca.cfg \
+FILES:${PN}-client = "${NAGIOS_CONF_DIR}/send_nsca.cfg \
                       ${bindir}/send_nsca \
 "
 
-RDEPENDS_${PN}-daemon += "libmcrypt \
+RDEPENDS:${PN}-daemon += "libmcrypt \
                           nagios-base \
 "
-RDEPENDS_${PN}-client += "libmcrypt \
+RDEPENDS:${PN}-client += "libmcrypt \
                           nagios-base \
 "
 
 SYSTEMD_PACKAGES = "${PN}-daemon"
-SYSTEMD_SERVICE_${PN}-daemon = "nagios-nsca.service"
-SYSTEMD_AUTO_ENABLE_${PN}-daemon = "enable"
+SYSTEMD_SERVICE:${PN}-daemon = "nagios-nsca.service"
+SYSTEMD_AUTO_ENABLE:${PN}-daemon = "enable"
 
 INITSCRIPT_PACKAGES = "${PN}-daemon"
-INITSCRIPT_NAME_${PN}-daemon = "nsca"
-INITSCRIPT_PARAMS_${PN}-daemon = "defaults"
+INITSCRIPT_NAME:${PN}-daemon = "nsca"
+INITSCRIPT_PARAMS:${PN}-daemon = "defaults"

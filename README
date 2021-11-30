@@ -8,7 +8,7 @@ The bbappend files for some recipes (e.g. linux-yocto) in this layer need to
 have 'virtualization' in DISTRO_FEATURES to have effect. To enable them, add
 in configuration file the following line.
 
-  DISTRO_FEATURES_append = " virtualization"
+  DISTRO_FEATURES:append = " virtualization"
 
 If meta-virtualization is included, but virtualization is not enabled as a
 distro feature a warning is printed at parse time:
@@ -34,6 +34,7 @@ that may also be enabled:
  - selinux: enables functionality in libvirt and lxc
  - systemd: enable systemd services and unit files (for recipes for support)
  - sysvinit: enable sysvinit scripts (for recipes with support)
+ - seccomp: enable seccomp support for packages that have the capability.
 
 Dependencies
 ------------
@@ -74,6 +75,12 @@ branch: master
 revision: HEAD
 prio: default
 
+Community / Colaboration
+------------------------
+
+Repository: https://git.yoctoproject.org/cgit/cgit.cgi/meta-virtualization/
+Mailing list: https://lists.yoctoproject.org/g/meta-virtualization
+IRC: libera.chat #meta-virt channel
 
 Maintenance
 -----------

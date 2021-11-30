@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=09042bd5c6c96a2b9e45ddf1bc517eed"
 SRCNAME = "dbus"
 
 PKG_NAME = "github.com/godbus/${SRCNAME}"
-SRC_URI = "git://${PKG_NAME}.git"
+SRC_URI = "git://${PKG_NAME}.git;branch=master;protocol=https"
 
 SRCREV = "5f6efc7ef2759c81b7ba876593971bfce311eab3"
 PV = "4.0.0+git${SRCPV}"
@@ -26,4 +26,4 @@ go_dbus_sysroot_preprocess () {
     cp -r ${D}${prefix}/local/go/src/${PKG_NAME} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
 
-FILES_${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"
+FILES:${PN} += "${prefix}/local/go/src/${PKG_NAME}/*"

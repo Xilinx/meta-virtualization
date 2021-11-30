@@ -29,14 +29,16 @@ inherit autotools-brokensep update-rc.d systemd update-alternatives
 
 DEPENDS = "gd unzip-native"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     gd \
     libpng \
     fontconfig \
     apache2 \
-    php \
+    php-cli \
     nagios-base \
 "
+
+PNBLACKLIST[nagios-core] ?= "${@bb.utils.contains('BBFILE_COLLECTIONS', 'webserver', '', 'Depends on apache2 from meta-webserver which is not included', d)}"
 
 acpaths = "-I ${S}/autoconf-macros"
 
@@ -63,12 +65,12 @@ EXTRA_OECONF += "ac_cv_header_ltdl_h=no"
 EXTRA_OECONF += "ac_cv_path_PERL=${bindir}/perl"
 
 # Fix build failure for gcc-10
-CFLAGS_append = " -fcommon"
+CFLAGS:append = " -fcommon"
 
 # Set to "1" to allow nagios-core post-init to modify Apache configuration
 NAGIOS_MODIFY_APACHE ??= "1"
 
-do_configure_prepend() {
+do_configure:prepend() {
 	# rename these macros to have .m4 suffix so that autoreconf could recognize them
 	for macro in `ls ${S}/autoconf-macros/ax_nagios_get_*`; do
 		mv $macro $macro.m4
@@ -80,7 +82,7 @@ do_compile() {
 }
 
 do_install() {
-    oe_runmake 'DESTDIR=${D}' install
+    oe_runmake 'DESTDIR=${D}' install-unstripped
     oe_runmake 'DESTDIR=${D}' install-init
     oe_runmake 'DESTDIR=${D}' install-config
     oe_runmake 'DESTDIR=${D}' install-commandmode
@@ -115,7 +117,7 @@ do_install() {
     fi
 }
 
-pkg_postinst_ontarget_${PN}-setup () {
+pkg_postinst_ontarget:${PN}-setup () {
     # Set password for nagiosadmin user
     if [ -z "${NAGIOS_DEFAULT_ADMINUSER_PASSWORD}" ]; then
         htpasswd -c ${NAGIOS_CONF_DIR}/htpasswd.users nagiosadmin
@@ -132,23 +134,23 @@ pkg_postinst_ontarget_${PN}-setup () {
 
 PACKAGES += "${SRCNAME}-base ${PN}-setup"
 
-FILES_${PN} += "${datadir} \
+FILES:${PN} += "${datadir} \
                 ${NAGIOS_PLUGIN_DIR} \
                 ${NAGIOS_CGIBIN_DIR} \
 "
 
-FILES_${PN}-dbg += "${NAGIOS_CGIBIN_DIR}/.debug"
+FILES:${PN}-dbg += "${NAGIOS_CGIBIN_DIR}/.debug"
 
-ALLOW_EMPTY_${SRCNAME}-base = "1"
-ALLOW_EMPTY_${PN}-setup = "1"
+ALLOW_EMPTY:${SRCNAME}-base = "1"
+ALLOW_EMPTY:${PN}-setup = "1"
 
 SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} = "nagios-core.service"
-SYSTEMD_AUTO_ENABLE_${PN} = "enable"
+SYSTEMD_SERVICE:${PN} = "nagios-core.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 USERADD_PACKAGES += "${SRCNAME}-base"
-GROUPADD_PARAM_${SRCNAME}-base = "-r ${NAGIOS_GROUP}"
-USERADD_PARAM_${SRCNAME}-base = "-r -M -g ${NAGIOS_GROUP} ${NAGIOS_USER}"
+GROUPADD_PARAM:${SRCNAME}-base = "-r ${NAGIOS_GROUP}"
+USERADD_PARAM:${SRCNAME}-base = "-r -M -g ${NAGIOS_GROUP} ${NAGIOS_USER}"
 
 INITSCRIPT_NAME = "nagios"
 INITSCRIPT_PARAMS = "defaults"
@@ -156,7 +158,5 @@ INITSCRIPT_PARAMS = "defaults"
 CVE_PRODUCT = "nagios_core"
 
 ALTERNATIVE_PRIORITY_${PN} = '20'
-ALTERNATIVE_${PN} = "nagios"
+ALTERNATIVE:${PN} = "nagios"
 ALTERNATIVE_LINK_NAME[nagios] = "${localstatedir}/nagios"
-
-INSANE_SKIP_${PN} = "already-stripped"
