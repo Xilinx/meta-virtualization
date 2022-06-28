@@ -11,6 +11,7 @@ XEN_KERNEL_MODULES ?= "kernel-module-xen-blkback kernel-module-xen-gntalloc \
 IMAGE_INSTALL += " \
     packagegroup-core-boot \
     packagegroup-core-ssh-openssh \
+    packagegroup-petalinux-tpm \
     ${XEN_KERNEL_MODULES} \
     xen-tools \
     qemu \
