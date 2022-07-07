@@ -41,9 +41,12 @@ DEPENDS += "openssl-native coreutils-native util-linux-native xz-native bc-nativ
 DEPENDS += "elfutils-native"
 DEPENDS += "qemu-native bison-native"
 
+QEMU_ARCH = "i386"
+QEMU_ARCH:aarch64 = "aarch64"
+
 RDEPENDS:${PN} += " jq bash"
 RDEPENDS:${PN} += " xen-tools-xl go-build socat daemonize"
-RDEPENDS:${PN} += " qemu-system-i386 ca-certificates qemu qemu-keymaps"
+RDEPENDS:${PN} += " qemu-system-${QEMU_ARCH} ca-certificates qemu qemu-keymaps"
 
 RUNX_USE_INTERNAL_BUSYBOX ?= ""
 
