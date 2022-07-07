@@ -31,9 +31,9 @@ RDEPENDS:${PN} = "\
 RDEPENDS:${PN}-dev = ""
 
 # Qemu is necessary on ARM platforms, and to support HVM guests on x86
-QEMU = "${@bb.utils.contains('PACKAGECONFIG', 'hvm', 'qemu', '', d)}"
-QEMU:arm = "qemu"
-QEMU:aarch64 = "qemu"
+QEMU = "${@bb.utils.contains('PACKAGECONFIG', 'hvm', 'qemu ${@bb.utils.contains('DISTRO_FEATURES', 'vmsep', 'qemu-system-i386', '', d)}', '', d)}"
+QEMU:arm = "qemu ${@bb.utils.contains('DISTRO_FEATURES', 'vmsep', 'qemu-system-i386', '', d)}"
+QEMU:aarch64 = "qemu ${@bb.utils.contains('DISTRO_FEATURES', 'vmsep', 'qemu-system-aarch64', '', d)}"
 
 RRECOMMENDS:${PN} = " \
     ${QEMU} \
@@ -742,11 +742,14 @@ SYSTEMD_SERVICE:${PN}-xencommons = " \
     "
 SYSTEMD_SERVICE:${PN}-xendomains = "xendomains.service"
 
+QEMU_ARCH = "i386"
+QEMU_ARCH:aarch64 = "aarch64"
+
 EXTRA_OECONF += " \
     --with-systemd=${systemd_unitdir}/system \
     --with-initddir=${INIT_D_DIR} \
     --with-sysconfig-leaf-dir=default \
-    --with-system-qemu=${bindir}/qemu-system-i386 \
+    --with-system-qemu=${bindir}/qemu-system-${QEMU_ARCH} \
     "
 
 do_configure() {
