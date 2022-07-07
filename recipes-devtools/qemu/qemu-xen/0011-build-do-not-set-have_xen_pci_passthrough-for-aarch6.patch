@@ -1,0 +1,33 @@
+From 646c86e0fa8d080b7c46fa70504a432851e6138f Mon Sep 17 00:00:00 2001
+From: Stefano Stabellini <stefano.stabellini@amd.com>
+Date: Thu, 7 Jul 2022 14:03:41 -0700
+Subject: [PATCH 11/12] build: do not set have_xen_pci_passthrough for aarch64
+ targets
+
+have_xen_pci_passthrough is only used for Xen x86 VMs.
+
+Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+---
+ meson.build | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 08a41bac93..1e0b149149 100644
+--- a/meson.build
++++ b/meson.build
+@@ -203,7 +203,11 @@ if not get_option('kvm').disabled() and targetos == 'linux'
+ endif
+ if not get_option('xen').disabled() and 'CONFIG_XEN_BACKEND' in config_host
+   accelerators += 'CONFIG_XEN'
+-  have_xen_pci_passthrough = not get_option('xen_pci_passthrough').disabled() and targetos == 'linux'
++  if cpu in ['x86', 'x86_64']
++    have_xen_pci_passthrough = not get_option('xen_pci_passthrough').disabled() and targetos == 'linux'
++  else
++    have_xen_pci_passthrough = false
++  endif
+ else
+   have_xen_pci_passthrough = false
+ endif
+-- 
+2.17.1
+

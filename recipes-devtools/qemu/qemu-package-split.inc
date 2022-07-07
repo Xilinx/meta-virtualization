@@ -1,5 +1,6 @@
 PACKAGES:prepend:class-target = "${PN}-x86_64 \
                      ${PN}-aarch64 \
+                     ${PN}-system-aarch64 \
                      ${PN}-arm \
                      ${PN}-i386 \
                      ${PN}-system-i386 \
@@ -21,9 +22,13 @@ FILES:${PN}-system-i386:class-target = "${bindir}/qemu-system-i386"
 RDEPENDS:${PN}-system-i386:append:class-target = "${PN}"
 INSANE_SKIP:${PN}-system-i386:class-target = "file-rdeps"
 
-FILES:${PN}-aarch64:class-target = "${bindir}/qemu-system-aarch64 ${bindir}/qemu-aarch64"
+FILES:${PN}-aarch64:class-target = "${bindir}/qemu-aarch64"
 RDEPENDS:${PN}-aarch64:append:class-target = "${PN}"
 INSANE_SKIP:${PN}-aarch64:class-target = "file-rdeps"
+
+FILES:${PN}-system-aarch64:class-target = "${bindir}/qemu-system-aarch64"
+RDEPENDS:${PN}-system-aarch64:append:class-target = "${PN}"
+INSANE_SKIP:${PN}-system-aarch64:class-target = "file-rdeps"
 
 FILES:${PN}-arm:class-target = "${bindir}/qemu-system-arm ${bindir}/qemu-arm"
 RDEPENDS:${PN}-arm:append:class-target = "${PN}"
