@@ -1,2 +1,4 @@
-# Include xen-boot-cmd.inc only if xen distro features is enabled.
-include ${@bb.utils.contains('DISTRO_FEATURES', 'xen', 'xen-boot-cmd.inc', '', d)}
+# Include xen-boot-cmd.inc only if ENABLE_XEN_UBOOT_SCR is set from configuration
+# file.
+ENABLE_XEN_UBOOT_SCR ?= ""
+include ${@'xen-boot-cmd.inc' if d.getVar('ENABLE_XEN_UBOOT_SCR') == '1' else ''}
