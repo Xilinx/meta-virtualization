@@ -71,7 +71,7 @@ do
 	fdt mknod /chosen dom0
 	fdt set /chosen/dom0 compatible  "xen,linux-zimage" "xen,multiboot-module" "multiboot,module"
 	fdt set /chosen/dom0 reg <0x0 @@KERNEL_LOAD_ADDRESS@@ 0x0 ${kernel_size}>
-	setenv dom0_bootargs "console=hvc0 earlycon=xen earlyprintk=xen clk_ignore_unused ${rootfs_param}"
+	setenv dom0_bootargs "console=hvc0 earlycon=xen earlyprintk=xen ${rootfs_param}"
 	fdt set /chosen xen,dom0-bootargs \"${dom0_bootargs}\"
 
 	setenv fdt_high 0xffffffffffffffff
