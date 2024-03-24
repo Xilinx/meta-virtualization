@@ -13,12 +13,9 @@ for boot_target in ${boot_targets};
 do
 	echo "Trying to load boot images from ${boot_target}"
 	if test "${boot_target}" = "jtag" ; then
-		tftpboot @@KERNEL_LOAD_ADDRESS@@ ${kernel_name}
-		setenv kernel_size 0x$filesize;
-		tftpboot @@RAMDISK_IMAGE_ADDRESS@@ ${rootfs_name}
-		setenv ramdisk_size 0x$filesize;
-		tftpboot @@XEN_LOAD_ADDRESS@@ ${xen_name}
-		tftpboot @@DEVICETREE_ADDRESS@@ system.dtb
+		echo "#####"
+		echo "See meta-xilinx/meta-xilinx-virtualization/README.md file for Xen JTAG boot instructions."
+		echo "#####"
 	fi
 	if test "${boot_target}" = "mmc0" || test "${boot_target}" = "mmc1" || test "${boot_target}" = "usb0" || test "${boot_target}" = "usb1"; then
 		if test "${boot_target}" = "mmc0" || test "${boot_target}" = "mmc1"; then
