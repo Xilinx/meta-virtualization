@@ -1,5 +1,7 @@
 # Adjust the variables for xen boot
 
+inherit xen-launch-config
+
 # Image offsets for Xen boot.
 KERNEL_OFFSET ?= "0xE00000"
 DEVICETREE_OFFSET ?= "0xC000000"
