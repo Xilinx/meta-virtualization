@@ -748,11 +748,13 @@ SYSTEMD_SERVICE:${PN}-xencommons = " \
     "
 SYSTEMD_SERVICE:${PN}-xendomains = "xendomains.service"
 
+QEMU_SYSTEM ?= "qemu-system-i386"
+
 EXTRA_OECONF += " \
     --with-systemd=${systemd_unitdir}/system \
     --with-initddir=${INIT_D_DIR} \
     --with-sysconfig-leaf-dir=default \
-    --with-system-qemu=${bindir}/qemu-system-i386 \
+    --with-system-qemu=${bindir}/${QEMU_SYSTEM} \
     "
 
 do_configure() {
