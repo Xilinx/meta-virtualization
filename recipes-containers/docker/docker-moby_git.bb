@@ -44,9 +44,9 @@ DESCRIPTION = "Linux container runtime \
 # so we get that tag, and make it our SRCREVS:
 #
 
-SRCREV_moby = "f417435e5f6216828dec57958c490c4f8bae4f98"
-SRCREV_libnetwork = "67e0588f1ddfaf2faf4c8cae8b7ea2876434d91c"
-SRCREV_cli = "01f933261885c0126edb3f47fd56d048ae31265a"
+SRCREV_moby = "a926bec8fc91332410133b24f3e9e3f5add13b48"
+SRCREV_libnetwork = "3797618f9a38372e8107d8c06f6ae199e1133ae8"
+SRCREV_cli = "43987fca488a535d810c429f75743d8c7b63bf4f"
 SRCREV_FORMAT = "moby_libnetwork"
 SRC_URI = "\
 	git://github.com/moby/moby.git;branch=25.0;name=moby;protocol=https \
@@ -56,8 +56,6 @@ SRC_URI = "\
 	file://0001-libnetwork-use-GO-instead-of-go.patch \
         file://0001-cli-use-external-GO111MODULE-and-cross-compiler.patch \
         file://0001-dynbinary-use-go-cross-compiler.patch;patchdir=src/import \
-        file://CVE-2024-36620.patch;patchdir=src/import \
-        file://CVE-2024-36621.patch;patchdir=src/import \
 	"
 
 DOCKER_COMMIT = "${SRCREV_moby}"
@@ -68,7 +66,7 @@ require docker.inc
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://src/import/LICENSE;md5=4859e97a9c7780e77972d989f0823f28"
 
-DOCKER_VERSION = "25.0.3"
+DOCKER_VERSION = "25.0.9"
 PV = "${DOCKER_VERSION}+git${SRCREV_moby}"
 
 CVE_PRODUCT = "docker mobyproject:moby"
